@@ -66,10 +66,12 @@ def handler(event: dict, context) -> dict:
             SELECT phone, name, location, region, email, operator, 
                    social_networks, last_seen, additional_info
             FROM phone_records
-            WHERE phone = %s
+            WHERE phone LIKE %s OR phone = %s
+            LIMIT 1
         '''
         
-        cursor.execute(query, (phone,))
+        search_pattern = f'%{phone.replace("+", "")}%'
+        cursor.execute(query, (search_pattern, phone))
         result = cursor.fetchone()
         
         cursor.close()
