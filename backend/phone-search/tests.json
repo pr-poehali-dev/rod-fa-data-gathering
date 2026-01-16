@@ -1,0 +1,46 @@
+{
+  "tests": [
+    {
+      "name": "Успешный поиск номера +79161234567",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "phone": "+79161234567"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "phone": "+79161234567",
+        "name": "string",
+        "location": "string",
+        "email": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Номер не найден",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "phone": "+79999999999"
+      },
+      "expectedStatus": 404,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Пустой номер телефона",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "phone": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

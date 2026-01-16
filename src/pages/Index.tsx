@@ -21,7 +21,7 @@ const Index = () => {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [error, setError] = useState('');
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setError('');
     
     if (!phoneNumber || phoneNumber.length < 10) {
@@ -31,21 +31,29 @@ const Index = () => {
 
     setIsSearching(true);
     
-    setTimeout(() => {
-      const mockResult: SearchResult = {
-        phone: phoneNumber,
-        name: 'Иванов Иван Иванович',
-        location: 'Москва, Россия',
-        email: 'ivan.ivanov@example.com',
-        social: ['VK', 'Instagram', 'Telegram'],
-        lastSeen: '2 дня назад',
-        operator: 'МТС',
-        region: 'Московская область'
-      };
-      
-      setSearchResult(mockResult);
+    try {
+      const response = await fetch('https://functions.poehali.dev/a5a97cf4-6532-4586-a32e-922ec481d860', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone: phoneNumber }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Ошибка при поиске данных');
+        setIsSearching(false);
+        return;
+      }
+
+      setSearchResult(data);
+    } catch (err) {
+      setError('Ошибка подключения к серверу');
+    } finally {
       setIsSearching(false);
-    }, 1500);
+    }
   };
 
   const handleReset = () => {
